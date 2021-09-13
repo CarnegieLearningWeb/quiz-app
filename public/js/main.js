@@ -59,6 +59,6 @@ window.addEventListener("load", function () {
     // View Source Button
     const sourceButton = document.getElementById("source-button");
     sourceButton.addEventListener("click", (event) => {
-        window.open("https://github.com/zackcl/quiz-app", "_blank");
+        window.open("https://github.com/CarnegieLearningWeb/quiz-app", "_blank");
     });
 });

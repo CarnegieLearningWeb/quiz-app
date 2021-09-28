@@ -4,16 +4,12 @@
 ## Description
 A simple quiz app for the UpGrade demo app.
 
-Here's the [Live Demo on Glitch](https://upgrade-quiz-app.glitch.me/).
-
-The app currently randomly decides the question/motivational support type on page load. (Total 6 variations)
-
 <img src="condition-design.jpg" alt="condition design" width="800"/>
-
 
 ## Setup
 1. Installation of node.js is required.
-2. Run the following commands in the Terminal.
+2. Setup [UpGrade](https://github.com/CarnegieLearningWeb/UpGrade) following this [guide](https://upgrade-platform.gitbook.io/upgrade-documentation/hosting). 
+3. Run the following commands in the Terminal.
 ```
 git clone https://github.com/CarnegieLearningWeb/quiz-app.git
 cd quiz-app

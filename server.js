@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyparser = require("body-parser");
 const favicon = require("serve-favicon");
+const { v4: uuidv4 } = require("uuid");
 const path = require("path");
 const PORT = process.env.PORT || 8080;
 const app = express();
@@ -21,12 +22,17 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "index.html"));
 });
 
+// Return a unique user ID
+app.get("/api/v1/userid", (req, res) => {
+    return res.status(200).json({ id: uuidv4() });
+});
+
+// Return whether the answer is correct
 app.post("/api/v1/answer", (req, res) => {
-    const { contentType, questionType, motivationalSupportType, answer } = req.body;
+    const { contentType, answer } = req.body;
     switch (contentType) {
         case "Triangle":
             const isCorrect = Number(answer) === 35;
-            // TODO?: validate and store question type, motivational support type, and isCorrect values
             return res.status(200).json({ isCorrect });
         default:
             return res.status(400).json({ error: true, message: `Invalid Content Type: ${contentType}` });

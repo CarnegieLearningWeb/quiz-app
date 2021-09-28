@@ -1,13 +1,38 @@
-window.addEventListener("load", function () {
+// Accessing UpgradeClient (Note: We should make UpgradeClient directly accessible)
+const UpgradeClient = window["upgrade-client-lib"].UpgradeClient;
 
-    // Content Type
-    const contentTypes = ["Triangle", "Square", "Rectangle"];
-    const contentType = contentTypes[0];
+// UpGrade/Experiment settings
+const hostUrl = "http://localhost:3030";
+const context = "app";
+const expPoint = "triangle_area";
+const questionTypeExpId = "question_type";
+const motivationalSupportTypeExpId = "motivational_support_type";
+
+window.addEventListener("load", async () => {
+    // Store the page loaded time (used to calculate the timeSpent metric)
+    const pageLoadedTime = new Date();
+
+    // Fetch the unique user ID from the server
+    const response = await fetch("/api/v1/userid", {
+        method: "GET"
+    });
+    const data = await response.json();
+    const userId = data.id;
+    console.log(`User ID: ${userId}`);
+
+    // Construct and initialize the UpgradeClient library
+    const upClient = new UpgradeClient(userId, hostUrl);
+    await upClient.init();
+
+    // Content Type (Triangle / Rectangle / Square)
+    const contentType = "Triangle";
     console.log(`Content Type: ${contentType}`);
 
     // Question Type (default: Decontextual)
-    const questionTypes = ["Decontextual", "Contextual"];
-    const questionType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+    // Note: getExperimentCondition returns null after the experiment if the post experiment rule is Assign: default
+    const questionTypeExpCondition = await upClient.getExperimentCondition(context, expPoint, questionTypeExpId);
+    const questionType = questionTypeExpCondition == null ? "Decontextual" : questionTypeExpCondition.assignedCondition.conditionCode;
+    await upClient.markExperimentPoint(expPoint, questionType, questionTypeExpId);
     console.log(`Question Type: ${questionType}`);
     const questionText = document.getElementById("question-text");
     const contextuals = document.querySelectorAll(".contextual");
@@ -22,12 +47,14 @@ window.addEventListener("load", function () {
             break;
     }
 
-    // Motivational Support Type (default: Default)
-    const motivationalSupportTypes = ["Default", "Mindset", "Utility Value"];
-    const motivationalSupportType = motivationalSupportTypes[Math.floor(Math.random() * motivationalSupportTypes.length)];
+    // Motivational Support Type (default: No Support)
+    // Note: getExperimentCondition returns null after the experiment if the post experiment rule is Assign: default
+    const motivationalSupportTypeExpCondition = await upClient.getExperimentCondition(context, expPoint, motivationalSupportTypeExpId);
+    const motivationalSupportType = motivationalSupportTypeExpCondition == null ? "No Support" : motivationalSupportTypeExpCondition.assignedCondition.conditionCode;
+    await upClient.markExperimentPoint(expPoint, motivationalSupportType, motivationalSupportTypeExpId);
     console.log(`Motivational Support Type: ${motivationalSupportType}`);
     switch (motivationalSupportType) {
-        case "Default":
+        case "No Support":
             break;
         case "Mindset":
             setTimeout(() => alert("Did you know your brain grows as you learn?"), 500);
@@ -40,25 +67,52 @@ window.addEventListener("load", function () {
     // Answer Submission Form
     const answerForm = document.getElementById("answer-form");
     const numberInput = document.getElementById("number-input");
-    answerForm.addEventListener("submit", (event) => {
+    answerForm.addEventListener("submit", async (event) => {
         event.preventDefault();
-        fetch("/api/v1/answer", {
+
+        // Fetch the answer status (isCorrect) from the server
+        const response = await fetch("/api/v1/answer", {
             method: "POST",
             headers: { "Accept": "application/json", "Content-Type": "application/json" },
-            body: JSON.stringify({ contentType, questionType, motivationalSupportType, answer: numberInput.value })
-        }).then(response => response.json()).then((data) => {
-            if (data.error) {
-                alert(data.message);
-                return;
-            }
-            alert(data.isCorrect === true ? "Correct Answer!" : "Wrong Answer!");
-            window.location.reload();
+            body: JSON.stringify({ contentType, answer: numberInput.value })
         });
+        const data = await response.json();
+        if (data.error) {
+            alert(data.message);
+            return;
+        }
+        // Post Metrics (Note: Need a documentation and maybe a better way to add/post metrics)
+        /* 
+        How to add metrics in UpGrade: Profile -> Metrics -> Add Metrics (add each data one by one)
+        {
+            "metric": "timeSpent",
+            "datatype": "continuous"
+        }
+        {
+            "metric": "answerStatus",
+            "datatype": "categorical",
+            "allowedValues":  ["CORRECT", "WRONG"]
+        }
+        */
+        const metrics = [{
+            timestamp: new Date().toISOString(), // Note: Do we need to require this from the user?
+            metrics: {
+                attributes: {
+                    timeSpent: Math.round((new Date() - pageLoadedTime) / 1000),
+                    answerStatus: data.isCorrect === true ? "CORRECT" : "WRONG"
+                }
+            }
+        }];
+        await upClient.log(metrics);  // Note: Why does the log() function require an array? Any use cases?
+
+        // Alert the answer status and reload the page
+        alert(data.isCorrect === true ? "Correct Answer!" : "Wrong Answer!");
+        window.location.reload();
     });
 
     // View Source Button
     const sourceButton = document.getElementById("source-button");
-    sourceButton.addEventListener("click", (event) => {
+    sourceButton.addEventListener("click", () => {
         window.open("https://github.com/CarnegieLearningWeb/quiz-app", "_blank");
     });
 });

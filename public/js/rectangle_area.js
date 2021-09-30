@@ -4,7 +4,7 @@ const UpgradeClient = window["upgrade-client-lib"].UpgradeClient;
 // UpGrade/Experiment settings
 const hostUrl = "http://localhost:3030";
 const context = "app";
-const expPoint = "triangle_area";
+const expPoint = "rectangle_area";
 const questionTypeExpId = "question_type";
 const motivationalSupportTypeExpId = "motivational_support_type";
 
@@ -24,8 +24,8 @@ window.addEventListener("load", async () => {
     const upClient = new UpgradeClient(userId, hostUrl);
     await upClient.init();
 
-    // Content Type (Triangle / Rectangle / Square)
-    const contentType = "Triangle";
+    // Content Type (Square / Rectangle / Triangle)
+    const contentType = "Rectangle";
     console.log(`Content Type: ${contentType}`);
 
     // Question Type (default: Decontextual)
@@ -38,11 +38,11 @@ window.addEventListener("load", async () => {
     const contextuals = document.querySelectorAll(".contextual");
     switch (questionType) {
         case "Decontextual":
-            questionText.innerHTML = "1 - A triangle is <b>14</b> inches long and has a <b>5</b> inch base.<br>What is the <b>area</b> of the triangle?";
+            questionText.innerHTML = "A rectangle has a length of <b>50</b> inches and a width of <b>30</b> inches.<br>What is the <b>area</b> of the rectangle?";
             contextuals.forEach(contextual => contextual.style.display = "none");
             break;
         case "Contextual":
-            questionText.innerHTML = "1 - A college banner is <b>14</b> inches long and has a <b>5</b> inch base.<br>What is the <b>area</b> of the banner?";
+            questionText.innerHTML = "A television has a length of <b>50</b> inches and a width of <b>30</b> inches.<br>What is the <b>area</b> of the television?";
             contextuals.forEach(contextual => contextual.style.display = "block");
             break;
     }
@@ -107,7 +107,7 @@ window.addEventListener("load", async () => {
 
         // Alert the answer status and reload the page
         alert(data.isCorrect === true ? "Correct Answer!" : "Wrong Answer!");
-        window.location.reload();
+        window.location.href = "/triangle_area";
     });
 
     // View Source Button

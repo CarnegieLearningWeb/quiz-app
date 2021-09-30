@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Quiz App</title>
+    <meta charset=utf-8 />
+    <meta name="description" content="Quiz App" />
+    <meta name="keywords" content="Quiz, App" />
+    <meta name="viewport"
+        content="user-scalable=no, width=device-width, initial-scale=1.0, minimum-scale=0.75, maximum-scale=0.75" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="stylesheet" href="css/main.css" />
+    <!-- Note: We should have a separate file (e.g. upgrade_client_lib.min.js) so UpgradeClient can be directly accessible -->
+    <script src="https://cdn.jsdelivr.net/npm/upgrade_client_lib@1.1.7/dist/bundle.min.js"></script>
+</head>
+
+<body>
+    <div id="wrapper">
+        <div id="header">
+            <div id="title" class="header-elem">
+                <h1 id="title-text">Quiz App</h1>
+            </div>
+            <div id="user" class="header-elem">
+                <p id="user-text">Logged in as <b>Hifumi Abe</b></p>
+            </div>
+        </div>
+        <div id="content">
+            <div id="question">
+                <p id="question-text"></p>
+            </div>
+            <div id="drawing">
+                <svg height="100%" width="400px" viewBox="0 0 300 120" preserveAspectRatio="xMidYMid meet">
+                    <rect x="75" y="-25" width="150" height="150"
+                        style="fill:none;stroke:rgb(126, 126, 126);stroke-width:1" />
+                    <image class="contextual" href="asset/image/napkin.svg" x="76" y="-24" width="148" height="148" />
+                    <text x="48" y="56" font-family="'Open Sans', Arial, Helvetica, sans-serif" font-weight="bold"
+                        fill="rgb(51,51,51)" font-size="10px">10 in</text>
+                    <text x="140" y="138" font-family="'Open Sans', Arial, Helvetica, sans-serif" font-weight="bold"
+                        fill="rgb(51,51,51)" font-size="10px">10 in</text>
+                </svg>
+            </div>
+            <div id="answer">
+                <form id="answer-form">
+                    <input type="number" id="number-input" autocomplete="off" required autofocus>
+                    <input type="submit" id="submit-input" value="Submit">
+                </form>
+            </div>
+        </div>
+        <div id="source">
+            <button id="source-button">View Source</button>
+        </div>
+    </div>
+    <script src="js/square_area.js"></script>
+</body>
+
+</html>

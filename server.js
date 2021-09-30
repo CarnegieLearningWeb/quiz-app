@@ -18,19 +18,15 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Serve views
 app.get("/", (req, res) => {
-    res.redirect("/square_area");
+    res.sendFile(path.join(__dirname, "views/index.html"));
 });
 
-app.get("/square_area", (req, res) => {
-    res.sendFile(path.join(__dirname, "views/square_area.html"));
-});
-
-app.get("/rectangle_area", (req, res) => {
-    res.sendFile(path.join(__dirname, "views/rectangle_area.html"));
-});
-
-app.get("/triangle_area", (req, res) => {
-    res.sendFile(path.join(__dirname, "views/triangle_area.html"));
+app.get("/app", (req, res) => {
+    // Serve randomly chosen content type's page
+    const contentTypes = ["Square", "Rectangle", "Triangle"];
+    const randomIndex = Math.floor(Math.random() * 3);
+    const contentType = contentTypes[randomIndex];
+    res.sendFile(path.join(__dirname, `views/${contentType.toLowerCase()}.html`));
 });
 
 // Return a unique user ID
@@ -43,9 +39,9 @@ app.post("/api/v1/answer", (req, res) => {
     const { contentType, answer } = req.body;
     switch (contentType) {
         case "Square":
-            return res.status(200).json({ isCorrect: Number(answer) === 40 });
+            return res.status(200).json({ isCorrect: Number(answer) === 100 });
         case "Rectangle":
-            return res.status(200).json({ isCorrect: Number(answer) === 70 });
+            return res.status(200).json({ isCorrect: Number(answer) === 1500 });
         case "Triangle":
             return res.status(200).json({ isCorrect: Number(answer) === 35 });
         default:

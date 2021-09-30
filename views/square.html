@@ -9,7 +9,7 @@
     <meta name="viewport"
         content="user-scalable=no, width=device-width, initial-scale=1.0, minimum-scale=0.75, maximum-scale=0.75" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/app.css" />
     <!-- Note: We should have a separate file (e.g. upgrade_client_lib.min.js) so UpgradeClient can be directly accessible -->
     <script src="https://cdn.jsdelivr.net/npm/upgrade_client_lib@1.1.7/dist/bundle.min.js"></script>
 </head>
@@ -30,19 +30,13 @@
             </div>
             <div id="drawing">
                 <svg height="100%" width="400px" viewBox="0 0 300 120" preserveAspectRatio="xMidYMid meet">
-                    <polygon points="20,0 300,50 20,100" style="fill:none;stroke:rgb(126, 126, 126);stroke-width:1" />
-                    <polygon class="contextual" points="22,2 293,50 22,98" style="fill:rgb(139, 84, 27);stroke:none" />
-                    <image class="contextual" href="asset/image/college-logo.svg" x="30" y="27" width="39"
-                        height="46" />
-                    <text class="contextual" x="76" y="60" font-family="'Times New Roman', Times, serif"
-                        font-weight="bold" fill="rgb(255, 255, 255)" font-size="28px">BROWN</text>
-                    <line x1="20" y1="110" x2="300" y2="110" style="stroke:rgb(126, 126, 126);stroke-width:2" />
-                    <line x1="20" y1="105" x2="20" y2="115" style="stroke:rgb(126, 126, 126);stroke-width:2" />
-                    <line x1="299" y1="105" x2="299" y2="115" style="stroke:rgb(126, 126, 126);stroke-width:2" />
-                    <text x="0" y="56" font-family="'Open Sans', Arial, Helvetica, sans-serif" font-weight="bold"
-                        fill="rgb(51,51,51)" font-size="10px">5 in</text>
-                    <text x="140" y="124" font-family="'Open Sans', Arial, Helvetica, sans-serif" font-weight="bold"
-                        fill="rgb(51,51,51)" font-size="10px">14 in</text>
+                    <rect x="75" y="-25" width="150" height="150"
+                        style="fill:none;stroke:rgb(126, 126, 126);stroke-width:1" />
+                    <image class="contextual" href="asset/image/napkin.svg" x="76" y="-24" width="148" height="148" />
+                    <text x="48" y="56" font-family="'Open Sans', Arial, Helvetica, sans-serif" font-weight="bold"
+                        fill="rgb(51,51,51)" font-size="10px">10 in</text>
+                    <text x="140" y="138" font-family="'Open Sans', Arial, Helvetica, sans-serif" font-weight="bold"
+                        fill="rgb(51,51,51)" font-size="10px">10 in</text>
                 </svg>
             </div>
             <div id="answer">
@@ -56,7 +50,7 @@
             <button id="source-button">View Source</button>
         </div>
     </div>
-    <script src="js/triangle_area.js"></script>
+    <script src="js/square.js"></script>
 </body>
 
 </html>

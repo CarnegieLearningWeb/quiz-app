@@ -4,9 +4,9 @@ const UpgradeClient = window["upgrade-client-lib"].UpgradeClient;
 // UpGrade/Experiment settings
 const hostUrl = "http://localhost:3030";
 const context = "app";
-const expPoint = "triangle_area";
-const questionTypeExpId = "question_type";
-const motivationalSupportTypeExpId = "motivational_support_type";
+const expPoint = "quiz_app_area";
+const questionTypeExpId = "triangle_area_question_type";
+const motivationalSupportTypeExpId = "triangle_area_motivational_support_type";
 
 window.addEventListener("load", async () => {
     // Store the page loaded time (used to calculate the timeSpent metric)
@@ -107,7 +107,7 @@ window.addEventListener("load", async () => {
 
         // Alert the answer status and reload the page
         alert(data.isCorrect === true ? "Correct Answer!" : "Wrong Answer!");
-        window.location.href = "/"; // Note: Should it redirect to square_area or ending page?
+        window.location.href = "/";
     });
 
     // View Source Button

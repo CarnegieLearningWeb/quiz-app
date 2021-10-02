@@ -1,10 +1,11 @@
 const express = require("express");
 const bodyparser = require("body-parser");
 const favicon = require("serve-favicon");
-const { v4: uuidv4 } = require("uuid");
+const short = require("short-uuid");
 const path = require("path");
 const PORT = process.env.PORT || 8080;
 const app = express();
+const userData = {};
 
 // Serve favicon
 app.use(favicon(path.join(__dirname, "public/asset/favicon/favicon.ico")));
@@ -21,31 +22,46 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "views/index.html"));
 });
 
-app.get("/app", (req, res) => {
-    // Serve randomly chosen content type's page
-    const contentTypes = ["Square", "Rectangle", "Triangle"];
-    const randomIndex = Math.floor(Math.random() * 3);
-    const contentType = contentTypes[randomIndex];
+// Serve area question page for the user
+app.get("/area/:userId", (req, res) => {
+    const userId = req.params.userId;
+    if (!(userId in userData)) {
+        return res.redirect("/");
+    }
+    const contentType = userData[userId].contentType;
     res.sendFile(path.join(__dirname, `views/${contentType.toLowerCase()}.html`));
 });
 
-// Return a unique user ID
-app.get("/api/v1/userid", (req, res) => {
-    return res.status(200).json({ id: uuidv4() });
+// Temporary login (signup -> login)
+app.get("/api/login", (req, res) => {
+    const userId = short.generate().substr(0, 11);
+    userData[userId] = {
+        contentType: "Square"
+    };
+    res.status(200).json({ userId: userId });
 });
 
 // Return whether the answer is correct
-app.post("/api/v1/answer", (req, res) => {
-    const { contentType, answer } = req.body;
+app.post("/api/answer", (req, res) => {
+    const { userId, contentType, answer } = req.body;
+    if (!(userId in userData)) {
+        return res.status(400).json({ error: true, message: `Invalid User ID: ${userId}` });
+    }
     switch (contentType) {
         case "Square":
-            return res.status(200).json({ isCorrect: Number(answer) === 100 });
+            userData[userId].contentType = "Rectangle";
+            res.status(200).json({ isCorrect: Number(answer) === 100 });
+            break;
         case "Rectangle":
-            return res.status(200).json({ isCorrect: Number(answer) === 1500 });
+            userData[userId].contentType = "Triangle";
+            res.status(200).json({ isCorrect: Number(answer) === 1500 });
+            break;
         case "Triangle":
-            return res.status(200).json({ isCorrect: Number(answer) === 35 });
+            delete userData[userId];
+            res.status(200).json({ isCorrect: Number(answer) === 35 });
+            break;
         default:
-            return res.status(400).json({ error: true, message: `Invalid Content Type: ${contentType}` });
+            res.status(400).json({ error: true, message: `Invalid Content Type: ${contentType}` });
     }
 });
 

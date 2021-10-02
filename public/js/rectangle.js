@@ -3,7 +3,7 @@ const UpgradeClient = window["upgrade-client-lib"].UpgradeClient;
 
 // UpGrade/Experiment settings
 const hostUrl = "http://localhost:3030";
-const context = "app";
+const context = "add";
 const expPoint = "quiz_app_area";
 const questionTypeExpId = "rectangle_area_question_type";
 const motivationalSupportTypeExpId = "rectangle_area_motivational_support_type";
@@ -12,13 +12,8 @@ window.addEventListener("load", async () => {
     // Store the page loaded time (used to calculate the timeSpent metric)
     const pageLoadedTime = new Date();
 
-    // Fetch the unique user ID from the server
-    const response = await fetch("/api/v1/userid", {
-        method: "GET"
-    });
-    const data = await response.json();
-    const userId = data.id;
-    console.log(`User ID: ${userId}`);
+    // Get the User ID
+    const userId = window.location.pathname.split("/").pop();
 
     // Construct and initialize the UpgradeClient library
     const upClient = new UpgradeClient(userId, hostUrl);
@@ -71,10 +66,10 @@ window.addEventListener("load", async () => {
         event.preventDefault();
 
         // Fetch the answer status (isCorrect) from the server
-        const response = await fetch("/api/v1/answer", {
+        const response = await fetch("/api/answer", {
             method: "POST",
             headers: { "Accept": "application/json", "Content-Type": "application/json" },
-            body: JSON.stringify({ contentType, answer: numberInput.value })
+            body: JSON.stringify({ userId, contentType, answer: numberInput.value })
         });
         const data = await response.json();
         if (data.error) {
@@ -107,7 +102,7 @@ window.addEventListener("load", async () => {
 
         // Alert the answer status and reload the page
         alert(data.isCorrect === true ? "Correct Answer!" : "Wrong Answer!");
-        window.location.href = "/";
+        window.location.href = `/area/${userId}`;
     });
 
     // View Source Button

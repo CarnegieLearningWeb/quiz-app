@@ -1,8 +1,16 @@
 window.addEventListener("load", async () => {
-    // Login Button (Currently simply redirects to the /app page)
+    // Login Button
     const loginButton = document.getElementById("login-button");
-    loginButton.addEventListener("click", () => {
-        window.location.href = "/app";
+    loginButton.addEventListener("click", async () => {
+
+        // Fetch the unique user ID from the server, and redirect to area page
+        const response = await fetch("/api/login", {
+            method: "GET"
+        });
+        const data = await response.json();
+        const userId = data.userId;
+        console.log(`User ID: ${userId}`);
+        window.location.href = `/area/${userId}`;
     });
 
     // View Source Button
